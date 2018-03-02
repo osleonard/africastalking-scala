@@ -1,4 +1,3 @@
-.idea/
 target/
 
 # this is for the generated modules
@@ -19,3 +18,18 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+
+#idea specific
+.idea/*
+
+# User-specific stuff:
+.idea/**/tasks.xml
+.idea/dictionaries
+
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
