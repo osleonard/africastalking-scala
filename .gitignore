@@ -1,2 +1,21 @@
+.idea/
+target/
+
+# this is for the generated modules
+**/target/
+
+
+# sbt specific
 *.class
 *.log
+.cache
+.lib/
+dist/*
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
