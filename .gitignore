@@ -21,7 +21,7 @@ project/plugins/project/
 
 #idea specific
 .idea/*
-
+.env
 # User-specific stuff:
 .idea/**/tasks.xml
 .idea/dictionaries
