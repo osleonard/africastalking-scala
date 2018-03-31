@@ -7,12 +7,14 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.settings.{ClientConnectionSettings, ConnectionPoolSettings}
 import akka.stream.ActorMaterializer
+import akka.util.ByteString
 import com.africastalking.core.commons.Const
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.concurrent.Future
 
-abstract class Service {
+abstract class Service extends DefaultJsonFormatter {
   /**
     *
     * @param apiKey
@@ -31,7 +33,8 @@ abstract class Service {
     val connectionPoolSettings = ConnectionPoolSettings(system).withConnectionSettings(connectionSettings)
     val environment = if (isProductionDomain) Const.PRODUCTION_DOMAIN else Const.SANDBOX_DOMAIN
     val url: String = s"https://api.$environment/version1/$endpoint"
-    Marshal(payload).to[RequestEntity].flatMap {
+    val fixPending = ByteString("abc")
+    Marshal(fixPending).to[RequestEntity].flatMap {
       requestPayload =>
         val httpRequest = HttpRequest(extractRequestVerb(requestVerb), url, List(RawHeader("apiKey", apiKey)), requestPayload)
         val responseFuture: Future[HttpResponse] = Http().singleRequest(httpRequest, settings = connectionPoolSettings)
