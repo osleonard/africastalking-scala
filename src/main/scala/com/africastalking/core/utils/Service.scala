@@ -1,4 +1,5 @@
-package com.africastalking.core.utils
+package com.africastalking.core
+package utils
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http

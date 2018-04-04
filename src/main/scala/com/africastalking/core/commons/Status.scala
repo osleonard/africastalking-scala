@@ -1,4 +1,5 @@
-package com.africastalking.core.commons
+package com.africastalking.core
+package commons
 
 object Status {
   val PENDING_CONFIRMATION = "PendingConfirmation"
