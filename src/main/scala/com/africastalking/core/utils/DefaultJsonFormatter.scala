@@ -2,18 +2,13 @@ package com.africastalking.core
 package utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import akka.http.scaladsl.model.{ HttpEntity, StatusCode }
-
+import akka.http.scaladsl.model.StatusCode
 import spray.json._
 
 import scala.reflect.ClassTag
 
-/**
-  *
-  * @param responseStatus
-  * @param response
-  */
-case class ErrorResponseException(responseStatus: StatusCode, response: Option[HttpEntity]) extends Exception
+
+case class ApiResponse(responseStatus: StatusCode, payload: String)
 
 trait DefaultJsonFormatter extends DefaultJsonProtocol with SprayJsonSupport{
   /**
