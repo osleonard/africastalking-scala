@@ -3,55 +3,24 @@ package com.africastalking.sms
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, StatusCodes}
 import com.africastalking.core.commons.TService
-import com.africastalking.core.utils.{DefaultJsonFormatter, TServiceConfig}
+import com.africastalking.core.utils.TServiceConfig
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.json._
 import scala.collection.mutable
 import scala.concurrent.Future
-
-case class Message(text: String, recipients: List[String], senderId: Option[String] = None)
-
-case class Recipient(number: String, cost: String, status: String, messageId: String)
-
-case class Subscription(id: Long, phoneNumber: String, date: String)
-
-
-sealed trait MessageResponse
-
-case object SendMessageResponse extends MessageResponse {
-
-  case class SmsMessageData(recipients: List[Recipient])
-
-}
-
-case class SubscriptionResponse(success: String, description: String) extends MessageResponse
-
-case object FetchMessageResponse extends MessageResponse {
-
-  case class SmsMessageData(messages: List[Message])
-
-}
-
-object SmsJsonProtocol extends DefaultJsonFormatter {
-  implicit val recipientFormat = jsonFormat4(Recipient)
-  implicit val sendSmsResponseFormat = jsonFormat1(SendMessageResponse.SmsMessageData)
-}
+import SendMessageResponse._
 
 object SmsService extends TSmsService  {
 
   import SmsJsonProtocol._
 
- /* override def send(message: Message, enqueue: Boolean = false) :  {
+  override def send(message: Message, enqueue: Boolean): Future[Either[String, SmsMessageData]] =
     callEndpoint(message, enqueue, "messaging")
-  }
-*/
 
-  override def send(message: Message, enqueue: Boolean) = ???
-
-  override def sendPremium: Unit = ???
+  override def sendPremium(): Unit = ???
 
 
-  private def callEndpoint(message: Message, enqueue: Boolean, endpoint: String): Future[Option[SendMessageResponse.SmsMessageData]] = {
+  private def callEndpoint(message: Message, enqueue: Boolean, endpoint: String): Future[Either[String, SmsMessageData]] = {
     val url = s"$environmentDomain$endpoint"
     val request: HttpRequest = HttpRequest(
       method = HttpMethods.POST,
@@ -76,18 +45,17 @@ object SmsService extends TSmsService  {
     makeRequest(request)
       .map { response =>
         response.responseStatus match {
-          case  StatusCodes.OK => Some(response.payload.toJson.convertTo[SendMessageResponse.SmsMessageData])
-          case _ => None
+          case  StatusCodes.OK => Right(response.payload.toJson.convertTo[SmsMessageData])
+          case _ => Left("Sorry, something went wrong")
         }
       }
   }
 }
 
 trait TSmsService extends TService with TServiceConfig {
+  def send(message: Message, enqueue : Boolean = false) : Future[Either[String, SmsMessageData]]
 
-  def send(message: Message, enqueue : Boolean = false) : Future[SendMessageResponse.SmsMessageData]
-
-  def sendPremium : Unit
+  def sendPremium() : Unit
 
 
 /*
