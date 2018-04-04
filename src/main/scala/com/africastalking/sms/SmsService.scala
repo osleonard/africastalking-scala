@@ -4,10 +4,8 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, StatusCodes}
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.{DefaultJsonFormatter, TServiceConfig}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.json._
-
 import scala.collection.mutable
 import scala.concurrent.Future
 
