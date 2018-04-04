@@ -1,4 +1,4 @@
-package com.africastalking.core.utils
+package com.africastalking.core.commons
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -7,37 +7,31 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.settings.{ClientConnectionSettings, ConnectionPoolSettings}
 import akka.stream.ActorMaterializer
-import akka.util.ByteString
-import com.africastalking.core.commons.Const
+import com.africastalking.core.utils.{Const, ServiceConfig}
 
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scala.concurrent.Future
 
-abstract class Service extends DefaultJsonFormatter {
-  /**
-    *
-    * @param apiKey
-    * @param endpoint
-    * @param requestVerb
-    * @param isProductionDomain
-    * @param payload
-    * @return
-    */
-  def makeRequest(apiKey: String, endpoint: String, requestVerb: String, isProductionDomain: Boolean, payload: Any): Future[HttpResponse] = {
+trait Service extends JsonMarshalls {
+  this: ServiceConfig =>
+
+
+  import Const._
+
+  def makeRequest(endpoint: String, requestVerb: String,  payload: AnyRef): Future[HttpResponse] = {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
     //setting idle timeout as 5 seconds or load it from configuration file
     val connectionSettings = ClientConnectionSettings(system).withIdleTimeout(5 seconds)
     val connectionPoolSettings = ConnectionPoolSettings(system).withConnectionSettings(connectionSettings)
-    val environment = if (isProductionDomain) Const.PRODUCTION_DOMAIN else Const.SANDBOX_DOMAIN
+    val environment = environs.getOrElse(environ, SANDBOX_DOMAIN)
     val url: String = s"https://api.$environment/version1/$endpoint"
-    val fixPending = ByteString("abc")
-    Marshal(fixPending).to[RequestEntity].flatMap {
+    Marshal(payload).to[RequestEntity].flatMap {
       requestPayload =>
         val httpRequest = HttpRequest(extractRequestVerb(requestVerb), url, List(RawHeader("apiKey", apiKey)), requestPayload)
-        val responseFuture: Future[HttpResponse] = Http().singleRequest(httpRequest, settings = connectionPoolSettings)
+        val responseFuture: Future[HttpResponse] = Http(system).singleRequest(httpRequest, settings = connectionPoolSettings)
         responseFuture
     }
   }
@@ -64,5 +58,15 @@ abstract class Service extends DefaultJsonFormatter {
     case _ => HttpMethods.GET
 
   }
+
+
+  /**
+    *
+    */
+
+  private val environs = Map(
+    "sandbox"       -> SANDBOX_DOMAIN,
+    "production"    -> PRODUCTION_DOMAIN
+  )
 
 }

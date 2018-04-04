@@ -1,4 +1,4 @@
-package com.africastalking.core.commons
+package com.africastalking.core.utils
 
 object Const {
   val PRODUCTION_DOMAIN = "africastalking.com"

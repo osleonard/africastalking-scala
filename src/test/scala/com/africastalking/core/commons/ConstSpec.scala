@@ -1,5 +1,6 @@
 package com.africastalking.core.commons
 
+import com.africastalking.core.utils.Const
 import org.scalatest.{FlatSpec, Matchers}
 
 class ConstSpec extends FlatSpec with Matchers{
