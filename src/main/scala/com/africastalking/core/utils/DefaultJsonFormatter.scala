@@ -3,7 +3,9 @@ package utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import akka.http.scaladsl.model.{ HttpEntity, StatusCode }
+
 import spray.json._
+
 import scala.reflect.ClassTag
 
 /**

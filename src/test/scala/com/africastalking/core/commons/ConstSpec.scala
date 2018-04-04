@@ -1,15 +1,16 @@
 package com.africastalking.core.commons
 
+import com.africastalking.core.utils.{Const, ServiceConfig}
 import org.scalatest.{FlatSpec, Matchers}
 
-class ConstSpec extends FlatSpec with Matchers{
+class ConstSpec extends FlatSpec with Matchers with ServiceConfig {
 
   "Production domain" should "be africastalking.com" in {
-    assert(Const.PRODUCTION_DOMAIN === "africastalking.com")
+    assert(productionDomain === "https://api.africastalking.com/version1/")
   }
 
   "Test domain" should "be sandbox.africastalking.com" in  {
-    assert(Const.SANDBOX_DOMAIN === "sandbox.africastalking.com")
+    assert(sandboxDomain === "https://api.sandbox.africastalking.com/version1/")
   }
 
   "International number format" should "match defined regex format irrespective of country" in {
