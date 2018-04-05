@@ -1,12 +1,6 @@
 package com.africastalking.core
 
 package object commons {
-  import com.africastalking.core.utils.DefaultJsonFormatter
-  import com.africastalking.sms.Message
-
-  trait JsonMarshalls extends DefaultJsonFormatter{
-    implicit val messageFormat = jsonFormat3(Message)
-  }
 
   object Status {
     val PENDING_CONFIRMATION = "PendingConfirmation"
