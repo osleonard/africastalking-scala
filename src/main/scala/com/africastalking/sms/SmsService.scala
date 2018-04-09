@@ -1,19 +1,14 @@
 package com.africastalking.sms
 
-import akka.http.scaladsl.model.headers.RawHeader
-import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, StatusCodes}
+import akka.http.scaladsl.model.headers.{Accept, RawHeader}
+import akka.http.scaladsl.model._
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.TServiceConfig
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.json._
-
 import scala.collection.mutable
 import scala.concurrent.Future
 import SendMessageResponse._
-
-import scala.util.Failure
-
 object SmsService extends TSmsService {
 
   import SmsJsonProtocol._
@@ -24,13 +19,6 @@ object SmsService extends TSmsService {
 
   }
 
-
-/*
-  override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long) = {
-    val retryDuration = if(retryDurationInHours <= 0) null else String.valueOf(retryDurationInHours)
-  }
-*/
-
   override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long) = ???
 
   private def callEndpoint(message: Message, enqueue: Int, endpoint: String): Future[Either[String, SmsMessageData]] = {
@@ -38,7 +26,7 @@ object SmsService extends TSmsService {
     val request: HttpRequest = HttpRequest(
       method = HttpMethods.POST,
       uri = url,
-      headers = List(RawHeader("apiKey", apiKey)),
+      headers = List(RawHeader("apiKey", apiKey),Accept(MediaTypes.`application/json`)),
       entity = {
         val data = mutable.Map(
           "username" -> username,
