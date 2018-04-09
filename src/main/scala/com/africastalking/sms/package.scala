@@ -14,13 +14,17 @@ package object sms {
   sealed trait MessageResponse
 
   case object SendMessageResponse extends MessageResponse {
+
     case class SmsMessageData(recipients: List[Recipient])
+
   }
 
   case class SubscriptionResponse(success: String, description: String) extends MessageResponse
 
   case object FetchMessageResponse extends MessageResponse {
+
     case class SmsMessageData(messages: List[Message])
+
   }
 
   object SmsJsonProtocol extends DefaultJsonFormatter {

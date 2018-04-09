@@ -27,6 +27,7 @@ trait TService {
 
     Http().singleRequest(httpRequest, settings = connectionPoolSettings)
     .flatMap { response =>
+      println(response)
       Unmarshal(response.entity).to[String]
         .map(data => ApiResponse(response.status, data))
     }

@@ -1,9 +1,7 @@
-package com.africastalking.core.commons
-
-import com.africastalking.core.utils.{Const, TServiceConfig}
-import org.scalatest.{FlatSpec, Matchers}
-
-class ConstSpec extends FlatSpec with Matchers with TServiceConfig {
+package com.africastalking.core
+package utils
+import com.africastalking.core.commons.ATCoreTestServiceT
+class ConstSpec extends ATCoreTestServiceT{
 
   "Production domain" should "be africastalking.com" in {
     assert(productionDomain === "https://api.africastalking.com/version1/")

@@ -4,23 +4,36 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.model.{FormData, HttpMethods, HttpRequest, StatusCodes}
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.TServiceConfig
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.json._
+
 import scala.collection.mutable
 import scala.concurrent.Future
 import SendMessageResponse._
 
-object SmsService extends TSmsService  {
+import scala.util.Failure
+
+object SmsService extends TSmsService {
 
   import SmsJsonProtocol._
 
-  override def send(message: Message, enqueue: Boolean): Future[Either[String, SmsMessageData]] =
-    callEndpoint(message, enqueue, "messaging")
+  override def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]] = {
+    val response = callEndpoint(message, enqueue, "messaging")
+    response
 
-  override def sendPremium(): Unit = ???
+  }
 
 
-  private def callEndpoint(message: Message, enqueue: Boolean, endpoint: String): Future[Either[String, SmsMessageData]] = {
+/*
+  override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long) = {
+    val retryDuration = if(retryDurationInHours <= 0) null else String.valueOf(retryDurationInHours)
+  }
+*/
+
+  override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long) = ???
+
+  private def callEndpoint(message: Message, enqueue: Int, endpoint: String): Future[Either[String, SmsMessageData]] = {
     val url = s"$environmentDomain$endpoint"
     val request: HttpRequest = HttpRequest(
       method = HttpMethods.POST,
@@ -37,35 +50,23 @@ object SmsService extends TSmsService  {
           case Some(sender) => data += ("from" -> sender)
           case None => None
         }
-
         FormData(data.toMap).toEntity
       }
     )
-
     makeRequest(request)
       .map { response =>
         response.responseStatus match {
-          case  StatusCodes.OK => Right(response.payload.toJson.convertTo[SmsMessageData])
-          case _ => Left("Sorry, something went wrong")
+          case StatusCodes.OK => Right(response.payload.toJson.convertTo[SmsMessageData])
+          case _ => Left(s"Sorry, ${response.payload}")
         }
       }
   }
 }
 
 trait TSmsService extends TService with TServiceConfig {
-  def send(message: Message, enqueue : Boolean = false) : Future[Either[String, SmsMessageData]]
 
-  def sendPremium() : Unit
+  def send(message: Message, enqueue: Int = 0): Future[Either[String, SmsMessageData]]
 
+  def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long): Future[Either[String, SmsMessageData]]
 
-/*
-  def send(): Future[SendMessageResponse.SmsMessageData] = {
-    val responseFromApi = makeRequest(apiKey, "messaging", "POST", false, Message)
-    responseFromApi.flatMap {
-      case HttpResponse(StatusCodes.OK, _, _, entity) => Unmarshal(entity).to[SendMessageResponse.SmsMessageData]
-      case resp @ HttpResponse(code, _, _, _) => resp.discardEntityBytes()
-        Future.failed{ErrorResponseException(code, Some("Error Occurred"))}
-    }
-  }
-*/
 }
