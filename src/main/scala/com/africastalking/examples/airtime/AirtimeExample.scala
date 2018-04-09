@@ -1,7 +1,9 @@
-package com.africastalking.examples.airtime
+package com.africastalking.examples
+package airtime
 
 import com.africastalking.airtime
 import com.africastalking.airtime.AirtimeService
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.util.{Failure, Success}
 
