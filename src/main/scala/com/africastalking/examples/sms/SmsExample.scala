@@ -1,4 +1,4 @@
-package com.africastalking.example.sms
+package com.africastalking.examples.sms
 import com.africastalking.sms
 import com.africastalking.sms.SmsService
 
