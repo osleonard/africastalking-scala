@@ -13,7 +13,7 @@ object SmsService extends TSmsService {
 
   import SmsJsonProtocol._
 
-  override def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]] = {
+  override def send(message: Message, enqueue: Int=0): Future[Either[String, SmsMessageData]] = {
     val response = callEndpoint(message, enqueue, "messaging")
     response
 
@@ -53,7 +53,7 @@ object SmsService extends TSmsService {
 
 trait TSmsService extends TService with TServiceConfig {
 
-  def send(message: Message, enqueue: Int = 0): Future[Either[String, SmsMessageData]]
+  def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]]
 
   def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long): Future[Either[String, SmsMessageData]]
 
