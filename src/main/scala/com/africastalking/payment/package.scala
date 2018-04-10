@@ -3,7 +3,7 @@ package com.africastalking
 import java.util.Calendar
 
 import com.africastalking.core.utils.{CurrencyCode, DefaultJsonFormatter}
-import com.africastalking.payment.response.CheckoutResponse
+import com.africastalking.payment.response.{CheckoutResponse, WalletTransferResponse}
 
 package object payment {
   final case class PaymentCard(number: String, cvvNumber: Int, expiryMonth: Int, expiryYear: Int, countryCode: String, authToken: String) {
@@ -45,12 +45,14 @@ package object payment {
   final case class MobileCheckoutPayload(username: String, productName: String, phoneNumber: String, currencyCode: String, amount: Double, metadata: Option[Map[String, String]] = None)
   final case class CardCheckoutPayload(username: String, productName: String, currencyCode: String, amount: Double, paymentCard: PaymentCard, narration: String, metadata: Option[Map[String, String]] = None)
   final case class BankCheckoutPayload(username: String, productName: String, currencyCode: String, amount: Double, bankAccount: BankAccount, narration: String, metadata: Option[Map[String, String]] = None)
+  final case class CheckoutValidationPayload(username: String, transactionId: String, otp: String)
 
   object PaymentJsonProtocol extends DefaultJsonFormatter {
-    implicit val paymentCardFormat            = jsonFormat6(PaymentCard.apply)
-    implicit val mobileCheckoutPayloadFormat  = jsonFormat6(MobileCheckoutPayload)
-    implicit val cardCheckoutPayloadFormat    = jsonFormat7(CardCheckoutPayload)
-    implicit val bankCheckoutPayloadFormat    = jsonFormat7(BankCheckoutPayload)
-    implicit val checkoutResponseFormat       = jsonFormat4(CheckoutResponse)
+    implicit val paymentCardFormat                   = jsonFormat6(PaymentCard.apply)
+    implicit val mobileCheckoutPayloadFormat         = jsonFormat6(MobileCheckoutPayload)
+    implicit val cardCheckoutPayloadFormat           = jsonFormat7(CardCheckoutPayload)
+    implicit val bankCheckoutPayloadFormat           = jsonFormat7(BankCheckoutPayload)
+    implicit val checkoutResponseFormat              = jsonFormat4(CheckoutResponse)
+    implicit val walletTransferResponseeFormat       = jsonFormat3(WalletTransferResponse)
   }
 }
