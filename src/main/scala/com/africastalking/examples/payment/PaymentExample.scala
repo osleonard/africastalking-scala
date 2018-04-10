@@ -4,7 +4,6 @@ package payment
 import com.africastalking.core.utils.CurrencyCode
 import com.africastalking.payment.{CheckoutRequest, PaymentService}
 import com.typesafe.scalalogging.LazyLogging
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
