@@ -2,16 +2,15 @@ package com.africastalking
 
 import java.util.Calendar
 
-import spray.json._
 import com.africastalking.core.utils.{CurrencyCode, DefaultJsonFormatter}
-import com.africastalking.payment.response.CheckoutResponse
+import com.africastalking.payment.response.{CheckoutResponse, WalletTransferResponse}
 
 package object payment {
-  import DefaultJsonProtocol._
-  implicit val paymentCardJsonFormat = jsonFormat6(PaymentCard.apply)
-
-  case class PaymentCard(number: String, cvvNumber: Int, expiryMonth: Int, expiryYear: Int, countryCode: String, authToken: String) {
-    override def toString: String = this.toJson.compactPrint
+  final case class PaymentCard(number: String, cvvNumber: Int, expiryMonth: Int, expiryYear: Int, countryCode: String, authToken: String) {
+    override def toString: String =
+      s"""
+       {"number": ${this.number}, "cvvNumber": ${this.cvvNumber}, "expiryMonth": ${this.expiryMonth}, "countryCode": ${this.countryCode}, "authToken": ${this.authToken} }
+     """
   }
 
   object PaymentCard {
@@ -39,13 +38,21 @@ package object payment {
     private def isAuthTokenValid(authToken: String): Boolean = authToken != null
   }
 
+  final case class MobileCheckoutRequest(productName: String, phoneNumber: String, currencyCode : CurrencyCode.Value, amount: Double)
+  final case class CardCheckoutRequest(productName: String, currencyCode: CurrencyCode.Value, amount: Double, cardDetails: PaymentCard, narration: String)
+  final case class BankCheckoutRequest(productName: String, currencyCode: CurrencyCode.Value, amount: Double, bankAccount: BankAccount, narration: String)
 
-  final case class CheckoutRequest(productName: String, phoneNumber: String, currencyCode : CurrencyCode.Value, amount: Double)
-
-  final case class CheckoutPayload(username: String, productName: String, phoneNumber: String, currencyCode: String, amount: Double, metadata: Option[Map[String, String]] = None)
+  final case class MobileCheckoutPayload(username: String, productName: String, phoneNumber: String, currencyCode: String, amount: Double, metadata: Option[Map[String, String]] = None)
+  final case class CardCheckoutPayload(username: String, productName: String, currencyCode: String, amount: Double, paymentCard: PaymentCard, narration: String, metadata: Option[Map[String, String]] = None)
+  final case class BankCheckoutPayload(username: String, productName: String, currencyCode: String, amount: Double, bankAccount: BankAccount, narration: String, metadata: Option[Map[String, String]] = None)
+  final case class CheckoutValidationPayload(username: String, transactionId: String, otp: String)
 
   object PaymentJsonProtocol extends DefaultJsonFormatter {
-    implicit val checkoutPayloadFormat = jsonFormat6(CheckoutPayload)
-    implicit val checkoutResponseFormat = jsonFormat4(CheckoutResponse)
+    implicit val paymentCardFormat                   = jsonFormat6(PaymentCard.apply)
+    implicit val mobileCheckoutPayloadFormat         = jsonFormat6(MobileCheckoutPayload)
+    implicit val cardCheckoutPayloadFormat           = jsonFormat7(CardCheckoutPayload)
+    implicit val bankCheckoutPayloadFormat           = jsonFormat7(BankCheckoutPayload)
+    implicit val checkoutResponseFormat              = jsonFormat4(CheckoutResponse)
+    implicit val walletTransferResponseeFormat       = jsonFormat3(WalletTransferResponse)
   }
 }

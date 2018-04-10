@@ -4,11 +4,12 @@ lazy val akkaHttpVersion = "10.0.11"
 lazy val akkaVersion    = "2.5.10"
 
 lazy val commonSettings = Seq(
-  organization := "com.africastalking",
-  organizationName := "Africas Talking Ltd",
-  scalaVersion := "2.12.4",
-  version      := "0.1.0-SNAPSHOT",
-  startYear := Some(2018)
+  organization       := "com.africastalking",
+  organizationName   := "Africas Talking Ltd",
+  scalaVersion       := "2.12.4",
+  version            := "0.1.0-SNAPSHOT",
+  startYear          := Some(2018),
+  crossScalaVersions := Seq("2.11.12", "2.12.4")
 )
 
 
