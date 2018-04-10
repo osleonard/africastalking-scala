@@ -1,4 +1,5 @@
-package com.africastalking.examples.payment
+package com.africastalking.examples
+package payment
 
 import com.africastalking.core.utils.CurrencyCode
 import com.africastalking.payment.{CheckoutRequest, PaymentService}
