@@ -2,7 +2,7 @@ package com.africastalking.examples
 package payment
 
 import com.africastalking.core.utils.CurrencyCode
-import com.africastalking.payment.{CheckoutRequest, PaymentService}
+import com.africastalking.payment.{MobileCheckoutRequest, PaymentService}
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -11,7 +11,7 @@ import scala.util.{Failure, Success}
 
 object PaymentExample extends App with LazyLogging {
 
-  val checkoutRequest = CheckoutRequest(
+  val checkoutRequest = MobileCheckoutRequest(
     productName  = "pace mate",
     phoneNumber  = "+254701435178",
     currencyCode = CurrencyCode.KES,

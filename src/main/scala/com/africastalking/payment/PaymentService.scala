@@ -1,10 +1,13 @@
 package com.africastalking.payment
 
+import java.util.Currency
+
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import com.africastalking.core.commons.TService
-import com.africastalking.core.utils.{Metadata, TServiceConfig}
+import com.africastalking.core.utils.{CurrencyCode, Metadata, TServiceConfig}
+import com.africastalking.payment.recipient.Bank
 import com.africastalking.payment.response._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -90,10 +93,27 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/checkout/validate", stringToCheckoutValidateResponse))
   }
 
-  override def bankTransfer: Unit = ???
+  override def bankTransfer(productName: String, recipients: List[Bank]): Future[Either[String, BankTransferResponse]] = {
+    val bankTransferPayload = BankTransferPayload(
+      username    = username,
+      productName = productName,
+      recipients  = recipients
+    )
 
-  override def walletTransfer: Unit = ???
+    Marshal(bankTransferPayload)
+      .to[RequestEntity]
+      .flatMap(entity => callEndpoint(entity, "bank/transfer", payload => payload.parseJson.convertTo[BankTransferResponse]))
+  }
 
+  override def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]] = ???
+  /*{
+    val walletTransferPayload = WalletTransferPayload(username = username, productName = productName, currencyCode = currencyCode, amount = amount, targetProductCode = targetProductCode)
+
+    Marshal(walletTransferPayload)
+      .to[RequestEntity]
+      .flatMap(entity => callEndpoint(entity, "bank/transfer", payload => payload.parseJson.convertTo[WalletTransferResponse]))
+  }
+*/
   override def topupStash: Unit = ???
 
   override def mobileB2B: Unit = ???
@@ -127,8 +147,8 @@ trait TPaymentService extends TService with TServiceConfig {
   def validateCardCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
   def bankCheckout(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]]
   def validateBankCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
-  def bankTransfer: Unit
-  def walletTransfer: Unit
+  def bankTransfer(productName: String, recipients: List[Bank]): Future[Either[String, BankTransferResponse]]
+  def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]]
   def topupStash: Unit
   def mobileB2B: Unit
   def mobileB2C: Unit
