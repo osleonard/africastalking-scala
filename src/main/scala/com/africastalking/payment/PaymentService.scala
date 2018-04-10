@@ -15,12 +15,12 @@ import spray.json._
 object PaymentService extends TPaymentService {
   import PaymentJsonProtocol._
 
-  override def mobileCheckout(checkoutRequest: CheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
+  override def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
 
     if(!validatePhoneNumber(checkoutRequest.phoneNumber))
       Future.successful(Left(s"Invalid phone number: ${checkoutRequest.phoneNumber}; Expecting number in format +XXXxxxxxxxxx"))
     else {
-      val checkoutPayload = CheckoutPayload(
+      val checkoutPayload = MobileCheckoutPayload(
         username     = username,
         productName  = checkoutRequest.productName,
         phoneNumber  = checkoutRequest.phoneNumber,
@@ -33,7 +33,18 @@ object PaymentService extends TPaymentService {
     }
   }
 
-  override def cardCheckout: Unit = ???
+  override def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
+    val checkoutPayload = CardCheckoutPayload(
+      username     = username,
+      productName  = checkoutRequest.productName,
+      currencyCode = checkoutRequest.currencyCode.toString,
+      amount       = checkoutRequest.amount,
+      narration    = checkoutRequest.narration,
+      metadata     = metadata
+    )
+
+    Marshal(checkoutPayload).to[RequestEntity].flatMap(entity => callEndpoint(entity, "card/checkout/charge"))
+  }
 
   override def validateCardCheckout: Unit = ???
 
@@ -69,8 +80,8 @@ object PaymentService extends TPaymentService {
 }
 
 trait TPaymentService extends TService with TServiceConfig {
-  def mobileCheckout(checkoutRequest: CheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
-  def cardCheckout: Unit
+  def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
+  def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
   def validateCardCheckout: Unit
   def bankCheckout: Unit
   def validateBankCheckout: Unit

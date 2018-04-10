@@ -10,7 +10,7 @@ package object payment {
   import DefaultJsonProtocol._
   implicit val paymentCardJsonFormat = jsonFormat6(PaymentCard.apply)
 
-  case class PaymentCard(number: String, cvvNumber: Int, expiryMonth: Int, expiryYear: Int, countryCode: String, authToken: String) {
+  final case class PaymentCard(number: String, cvvNumber: Int, expiryMonth: Int, expiryYear: Int, countryCode: String, authToken: String) {
     override def toString: String = this.toJson.compactPrint
   }
 
@@ -39,13 +39,14 @@ package object payment {
     private def isAuthTokenValid(authToken: String): Boolean = authToken != null
   }
 
-
-  final case class CheckoutRequest(productName: String, phoneNumber: String, currencyCode : CurrencyCode.Value, amount: Double)
-
-  final case class CheckoutPayload(username: String, productName: String, phoneNumber: String, currencyCode: String, amount: Double, metadata: Option[Map[String, String]] = None)
+  final case class MobileCheckoutRequest(productName: String, phoneNumber: String, currencyCode : CurrencyCode.Value, amount: Double)
+  final case class CardCheckoutRequest(productName: String, currencyCode: CurrencyCode.Value, amount: Double, cardDetails: PaymentCard, narration: String)
+  final case class MobileCheckoutPayload(username: String, productName: String, phoneNumber: String, currencyCode: String, amount: Double, metadata: Option[Map[String, String]] = None)
+  final case class CardCheckoutPayload(username: String, productName: String, currencyCode: String, amount: Double, narration: String, metadata: Option[Map[String, String]] = None)
 
   object PaymentJsonProtocol extends DefaultJsonFormatter {
-    implicit val checkoutPayloadFormat = jsonFormat6(CheckoutPayload)
-    implicit val checkoutResponseFormat = jsonFormat4(CheckoutResponse)
+    implicit val mobileCheckoutPayloadFormat = jsonFormat6(MobileCheckoutPayload)
+    implicit val cardCheckoutPayloadFormat   = jsonFormat6(CardCheckoutPayload)
+    implicit val checkoutResponseFormat      = jsonFormat4(CheckoutResponse)
   }
 }
