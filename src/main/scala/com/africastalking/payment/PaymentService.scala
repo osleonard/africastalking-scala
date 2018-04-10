@@ -15,7 +15,7 @@ import spray.json._
 object PaymentService extends TPaymentService {
   import PaymentJsonProtocol._
 
-  override def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
+  override def mobileCheckoutRequest(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
 
     if(!validatePhoneNumber(checkoutRequest.phoneNumber))
       Future.successful(Left(s"Invalid phone number: ${checkoutRequest.phoneNumber}; Expecting number in format +XXXxxxxxxxxx"))
@@ -33,12 +33,13 @@ object PaymentService extends TPaymentService {
     }
   }
 
-  override def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
+  override def cardCheckoutRequest(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
     val checkoutPayload = CardCheckoutPayload(
       username     = username,
       productName  = checkoutRequest.productName,
       currencyCode = checkoutRequest.currencyCode.toString,
       amount       = checkoutRequest.amount,
+      paymentCard  = checkoutRequest.cardDetails,
       narration    = checkoutRequest.narration,
       metadata     = metadata
     )
@@ -48,7 +49,19 @@ object PaymentService extends TPaymentService {
 
   override def validateCardCheckout: Unit = ???
 
-  override def bankCheckout: Unit = ???
+  override def bankCheckoutRequest(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
+    val checkoutPayload = BankCheckoutPayload(
+      username     = username,
+      productName  = checkoutRequest.productName,
+      currencyCode = checkoutRequest.currencyCode.toString,
+      amount       = checkoutRequest.amount,
+      bankAccount  = checkoutRequest.bankAccount,
+      narration    = checkoutRequest.narration,
+      metadata     = metadata
+    )
+
+    Marshal(checkoutPayload).to[RequestEntity].flatMap(entity => callEndpoint(entity, "bank/checkout/charge"))
+  }
 
   override def validateBankCheckout: Unit = ???
 
@@ -80,10 +93,10 @@ object PaymentService extends TPaymentService {
 }
 
 trait TPaymentService extends TService with TServiceConfig {
-  def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
-  def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
+  def mobileCheckoutRequest(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
+  def cardCheckoutRequest(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
   def validateCardCheckout: Unit
-  def bankCheckout: Unit
+  def bankCheckoutRequest(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]]
   def validateBankCheckout: Unit
   def bankTransfer: Unit
   def walletTransfer: Unit
