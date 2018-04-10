@@ -12,20 +12,21 @@ lazy val commonSettings = Seq(
 )
 
 
-
 lazy val root = (project in file(".")).
   settings(
     inThisBuild(commonSettings),
     name := "africastalking-scala",
     libraryDependencies ++= Seq(
-      "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
-      "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-      "com.typesafe.akka" %% "akka-actor"          % akkaVersion,
-      "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
-      "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
-      "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test,
-      scalaTest % Test
+      "ch.qos.logback"             %  "logback-classic"      % "1.2.3",
+      "com.typesafe.scala-logging" %% "scala-logging"        % "3.8.0",
+      "com.typesafe.akka"          %% "akka-http"            % akkaHttpVersion,
+      "com.typesafe.akka"          %% "akka-http-spray-json" % akkaHttpVersion,
+      "com.typesafe.akka"          %% "akka-http-xml"        % akkaHttpVersion,
+      "com.typesafe.akka"          %% "akka-stream"          % akkaVersion,
+      "com.typesafe.akka"          %% "akka-actor"           % akkaVersion,
+      "com.typesafe.akka"          %% "akka-http-testkit"    % akkaHttpVersion % Test,
+      "com.typesafe.akka"          %% "akka-testkit"         % akkaVersion     % Test,
+      "com.typesafe.akka"          %% "akka-stream-testkit"  % akkaVersion     % Test,
+      scalaTest                    % Test
     )
   )

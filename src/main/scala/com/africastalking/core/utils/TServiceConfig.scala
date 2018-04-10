@@ -5,15 +5,20 @@ import akka.util.Timeout
 import com.typesafe.config.ConfigFactory
 
 trait TServiceConfig {
-  private val config = ConfigFactory.load()
-  val username: String = config.getString("api.username")
-  val apiKey: String = config.getString("api.key")
-  val environ: String = config.getString("api.environ")
-  val productionDomain: String = config.getString("api.domain.production")
-  val sandboxDomain: String = config.getString("api.domain.sandbox")
-  val environmentDomain: String = if(environ.toLowerCase.equals("production")) productionDomain else sandboxDomain
-
   import scala.concurrent.duration._
+
+  def environmentHost: String
+
+  private lazy val config                = ConfigFactory.load()
+  lazy val username: String              = config.getString("at.username")
+  lazy val apiKey: String                = config.getString("at.key")
+  lazy val environ: String               = config.getString("at.environ")
+  lazy val apiProductionHost: String     = config.getString("at.host.api.production")
+  lazy val apiSandboxHost: String        = config.getString("at.host.api.sandbox")
+  lazy val paymentProductionHost: String = config.getString("at.host.payment.production")
+  lazy val paymentSandboxHost: String    = config.getString("at.host.payment.sandbox")
+  lazy val voiceProductionHost: String   = config.getString("at.host.voice.production")
+  lazy val voiceSandboxHost: String      = config.getString("at.host.voice.sandbox")
 
   def requestTimeout: Timeout = {
     val t = config.getString("akka.http.server.request-timeout")

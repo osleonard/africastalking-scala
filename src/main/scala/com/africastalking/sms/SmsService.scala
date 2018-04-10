@@ -4,29 +4,29 @@ import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import akka.http.scaladsl.model._
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.TServiceConfig
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import spray.json._
+
 import scala.collection.mutable
 import scala.concurrent.Future
 import SendMessageResponse._
+
+
 object SmsService extends TSmsService {
 
   import SmsJsonProtocol._
 
-  override def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]] = {
-    val response = callEndpoint(message, enqueue, "messaging")
-    response
-
-  }
+  override def send(message: Message, enqueue: Int = 0): Future[Either[String, SmsMessageData]] = callEndpoint(message, enqueue, "messaging")
 
   override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long) = ???
 
   private def callEndpoint(message: Message, enqueue: Int, endpoint: String): Future[Either[String, SmsMessageData]] = {
-    val url = s"$environmentDomain$endpoint"
+    val url = s"$environmentHost$endpoint"
     val request: HttpRequest = HttpRequest(
       method = HttpMethods.POST,
       uri = url,
-      headers = List(RawHeader("apiKey", apiKey),Accept(MediaTypes.`application/json`)),
+      headers = List(RawHeader("apiKey", apiKey), Accept(MediaTypes.`application/json`)),
       entity = {
         val data = mutable.Map(
           "username" -> username,
@@ -53,8 +53,9 @@ object SmsService extends TSmsService {
 
 trait TSmsService extends TService with TServiceConfig {
 
-  def send(message: Message, enqueue: Int = 0): Future[Either[String, SmsMessageData]]
+  def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]]
 
   def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long): Future[Either[String, SmsMessageData]]
 
+  override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
 }

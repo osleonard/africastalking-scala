@@ -10,16 +10,10 @@ import scala.reflect.ClassTag
 
 case class ApiResponse(responseStatus: StatusCode, payload: String)
 
-trait DefaultJsonFormatter extends DefaultJsonProtocol with SprayJsonSupport{
-  /**
-    *
-    * @tparam E
-    * @return
-    */
+trait DefaultJsonFormatter extends DefaultJsonProtocol with SprayJsonSupport {
   def jsonObjectFormat[E: ClassTag]: RootJsonFormat[E] = new RootJsonFormat[E] {
     val classTag = implicitly[ClassTag[E]]
     override def read(json: JsValue): E = classTag.runtimeClass.newInstance().asInstanceOf[E]
     override def write(obj: E): JsValue = JsObject("value" -> JsString(classTag.runtimeClass.getSimpleName))
   }
-
 }

@@ -12,12 +12,12 @@ object AirtimeService extends TAirtimeService {
   import AirtimeJsonProtocol._
 
   override def send(airtime: Airtime) : Future[Either[String,AirtimeResponse]] = {
-    val response = callEndpoint(airtime,"airtime/send")
+    val response = callEndpoint(airtime, "airtime/send")
     response
   }
 
   private def callEndpoint(payload: Airtime, endpoint: String): Future[Either[String, AirtimeResponse]] = {
-    val url = s"$environmentDomain$endpoint"
+    val url = s"$environmentHost$endpoint"
     val request: HttpRequest = HttpRequest(
       method = HttpMethods.POST,
       uri = url,
@@ -39,9 +39,10 @@ object AirtimeService extends TAirtimeService {
         }
       }
   }
-
 }
 
-trait TAirtimeService extends TService with TServiceConfig{
+trait TAirtimeService extends TService with TServiceConfig {
   def send(airtime: Airtime) : Future[Either[String,AirtimeResponse]]
+
+  override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
 }

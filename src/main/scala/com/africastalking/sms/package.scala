@@ -10,7 +10,6 @@ package object sms {
 
   case class Subscription(id: Long, phoneNumber: String, date: String)
 
-
   sealed trait MessageResponse
 
   case object SendMessageResponse extends MessageResponse {
@@ -31,5 +30,4 @@ package object sms {
     implicit val recipientFormat = jsonFormat4(Recipient)
     implicit val sendSmsResponseFormat = jsonFormat1(SendMessageResponse.SmsMessageData)
   }
-
 }

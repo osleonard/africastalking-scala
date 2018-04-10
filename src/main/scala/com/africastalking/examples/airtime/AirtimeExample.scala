@@ -3,6 +3,8 @@ package com.africastalking.examples.airtime
 import com.africastalking.airtime
 import com.africastalking.airtime.AirtimeService
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.util.{Failure, Success}
 
 object AirtimeExample extends App {
