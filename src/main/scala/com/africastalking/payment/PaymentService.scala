@@ -1,13 +1,11 @@
 package com.africastalking.payment
 
-import java.util.Currency
-
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.{CurrencyCode, Metadata, TServiceConfig}
-import com.africastalking.payment.recipient.Bank
+import com.africastalking.payment.recipient.{Consumer, Recipient}
 import com.africastalking.payment.response._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -93,7 +91,7 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/checkout/validate", stringToCheckoutValidateResponse))
   }
 
-  override def bankTransfer(productName: String, recipients: List[Bank]): Future[Either[String, BankTransferResponse]] = {
+  override def bankTransfer(productName: String, recipients: List[Recipient]): Future[Either[String, BankTransferResponse]] = {
     val bankTransferPayload = BankTransferPayload(
       username    = username,
       productName = productName,
@@ -105,20 +103,64 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/transfer", payload => payload.parseJson.convertTo[BankTransferResponse]))
   }
 
-  override def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]] = ???
-  /*{
-    val walletTransferPayload = WalletTransferPayload(username = username, productName = productName, currencyCode = currencyCode, amount = amount, targetProductCode = targetProductCode)
+  override def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]] = {
+    val walletTransferPayload = WalletTransferPayload(
+      username          = username,
+      productName       = productName,
+      targetProductCode = targetProductCode.toString,
+      currencyCode      = currencyCode,
+      amount            = amount,
+      metadata          = metadata
+    )
 
     Marshal(walletTransferPayload)
       .to[RequestEntity]
-      .flatMap(entity => callEndpoint(entity, "bank/transfer", payload => payload.parseJson.convertTo[WalletTransferResponse]))
+      .flatMap(entity => callEndpoint(entity, "transfer/wallet", payload => payload.parseJson.convertTo[WalletTransferResponse]))
   }
-*/
-  override def topupStash: Unit = ???
 
-  override def mobileB2B: Unit = ???
+  override def topUpStash(productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, TopUpStashResponse]] = {
+    val topUpStashPayload = TopUpStashPayload(
+      username     = username,
+      productName  = productName,
+      currencyCode = currencyCode,
+      amount       = amount,
+      metadata     = metadata
+    )
 
-  override def mobileB2C: Unit = ???
+    Marshal(topUpStashPayload)
+      .to[RequestEntity]
+      .flatMap(entity => callEndpoint(entity, "topup/stash", payload => payload.parseJson.convertTo[TopUpStashResponse]))
+  }
+
+  override def mobileB2B(b2bRequest: B2BRequest, metadata: Option[Metadata] = None): Future[Either[String, B2BResponse]] = {
+    val b2BPayload = B2BPayload(
+      username           = username,
+      productName        = b2bRequest.productName,
+      provider           = b2bRequest.provider.toString,
+      transferType       = b2bRequest.transferType.toString,
+      currencyCode       = b2bRequest.currencyCode.toString,
+      amount             = b2bRequest.amount,
+      destinationChannel = b2bRequest.destinationChannel,
+      destinationAccount = b2bRequest.destinationAccount,
+      metadata           = metadata
+    )
+
+    Marshal(b2BPayload)
+      .to[RequestEntity]
+      .flatMap(entity => callEndpoint(entity, "mobile/b2b/request", payload => payload.parseJson.convertTo[B2BResponse]))
+  }
+
+  override def mobileB2C(productName: String, recipients: List[Consumer]): Future[Either[String, B2CResponse]] = {
+    val b2cPayload = B2CPayload(
+      username    = username,
+      productName = productName,
+      recipients  = recipients
+    )
+
+    Marshal(b2cPayload)
+      .to[RequestEntity]
+      .flatMap(entity => callEndpoint(entity, "mobile/b2c/request", payload => payload.parseJson.convertTo[B2CResponse]))
+  }
 
   private def callEndpoint[T](entity: RequestEntity, endpoint: String, f: String => T): Future[Either[String, T]] = {
     val url = s"$environmentHost$endpoint"
@@ -147,11 +189,11 @@ trait TPaymentService extends TService with TServiceConfig {
   def validateCardCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
   def bankCheckout(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]]
   def validateBankCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
-  def bankTransfer(productName: String, recipients: List[Bank]): Future[Either[String, BankTransferResponse]]
+  def bankTransfer(productName: String, recipients: List[Recipient]): Future[Either[String, BankTransferResponse]]
   def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]]
-  def topupStash: Unit
-  def mobileB2B: Unit
-  def mobileB2C: Unit
+  def topUpStash(productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, TopUpStashResponse]]
+  def mobileB2B(b2bRequest: B2BRequest, metadata: Option[Metadata] = None): Future[Either[String, B2BResponse]]
+  def mobileB2C(productName: String, recipients: List[Consumer]): Future[Either[String, B2CResponse]]
 
   override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) paymentProductionHost else paymentSandboxHost
 }
