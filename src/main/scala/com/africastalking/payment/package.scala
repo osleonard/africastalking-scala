@@ -17,7 +17,7 @@ package object payment {
     currencyCode: CurrencyCode.Value,
     amount: Double,
     destinationChannel: String,
-    destinationAccount: String,
+    destinationAccount: String
   )
 
   final case class MobileCheckoutPayload(
@@ -56,13 +56,19 @@ package object payment {
   final case class WalletTransferPayload(
     username: String,
     productName: String,
-    currencyCode: CurrencyCode.Value,
+    currencyCode: String,
     amount: Double,
     targetProductCode: String,
     metadata: Option[Metadata] = None
   )
 
-  final case class TopUpStashPayload(username: String, productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata] = None)
+  final case class TopUpStashPayload(
+    username: String,
+    productName: String,
+    currencyCode: String,
+    amount: Double,
+    metadata: Option[Metadata] = None
+  )
 
   final case class B2CPayload(username: String, productName: String, recipients: List[Consumer])
 

@@ -2,7 +2,7 @@ package com.africastalking.payment
 
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{Accept, RawHeader}
+
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.{CurrencyCode, Metadata, TServiceConfig}
 import com.africastalking.payment.recipient.{Consumer, Recipient}
@@ -10,6 +10,7 @@ import com.africastalking.payment.response._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 import spray.json._
 
 object PaymentService extends TPaymentService {
@@ -108,7 +109,7 @@ object PaymentService extends TPaymentService {
       username          = username,
       productName       = productName,
       targetProductCode = targetProductCode.toString,
-      currencyCode      = currencyCode,
+      currencyCode      = currencyCode.toString,
       amount            = amount,
       metadata          = metadata
     )
@@ -122,7 +123,7 @@ object PaymentService extends TPaymentService {
     val topUpStashPayload = TopUpStashPayload(
       username     = username,
       productName  = productName,
-      currencyCode = currencyCode,
+      currencyCode = currencyCode.toString,
       amount       = amount,
       metadata     = metadata
     )
@@ -162,7 +163,7 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "mobile/b2c/request", payload => payload.parseJson.convertTo[B2CResponse]))
   }
 
-  private def callEndpoint[T](entity: RequestEntity, endpoint: String, f: String => T): Future[Either[String, T]] = {
+  /*private def callEndpoint[T](entity: RequestEntity, endpoint: String, f: String => T): Future[Either[String, T]] = {
     val url = s"$environmentHost$endpoint"
     val request: HttpRequest = HttpRequest(
       method  = HttpMethods.POST,
@@ -176,7 +177,7 @@ object PaymentService extends TPaymentService {
         case _                                    => Left(s"Sorry, ${response.payload}")
       }
     }
-  }
+  }*/
 
   private def stringToCheckoutResponse(payload: String): CheckoutResponse = payload.parseJson.convertTo[CheckoutResponse]
 
