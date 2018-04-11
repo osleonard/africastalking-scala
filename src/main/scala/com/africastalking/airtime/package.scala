@@ -4,7 +4,11 @@ import com.africastalking.core.utils.DefaultJsonFormatter
 
 package object airtime {
 
-  case class Airtime(recipients: List[String], amount: String)
+  case class Airtime(recipients: List[String], amount: String){
+    override def toString: String =  s"""
+       {"phoneNumber": ${this.recipients.mkString}, "amount": ${this.amount} }
+     """
+  }
 
   case class AirtimeResponse(numSent: Int, totalAmount: String, totalDiscount: String, errorMessage: String, responses: List[AirtimeEntry])
 

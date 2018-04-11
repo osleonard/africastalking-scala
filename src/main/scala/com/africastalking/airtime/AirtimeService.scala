@@ -2,12 +2,10 @@ package com.africastalking.airtime
 
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{Accept, RawHeader}
-
+import com.africastalking.core.utils.TServiceConfig
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.africastalking.core.commons.TService
-import com.africastalking.core.utils.TServiceConfig
-import spray.json.{enrichAny, _}
-
+import spray.json._
 import scala.concurrent.Future
 
 
@@ -26,17 +24,11 @@ object AirtimeService extends TAirtimeService {
       uri = url,
       headers = List(RawHeader("apiKey", apiKey),Accept(MediaTypes.`application/json`)),
       entity = {
-        val recipient = Map(
-          "phoneNumber" -> payload.recipients.mkString(","),
-          "amount" -> payload.amount
-        ).toJson.toString()
-
-        println(recipient)
-
         val data = Map(
           "username" -> username,
-          "recipients" -> recipient
+          "recipients" -> payload.toString
         )
+        println(data)
         FormData(data).toEntity
       }
     )
