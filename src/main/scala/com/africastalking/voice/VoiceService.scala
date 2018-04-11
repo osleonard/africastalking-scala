@@ -7,6 +7,7 @@ import com.africastalking.core.utils.TServiceConfig
 
 import spray.json._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class VoiceService extends TVoiceService {
