@@ -7,11 +7,11 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
-object AirtimeExample extends App with LazyLogging{
+object AirtimeExample extends App with LazyLogging {
 
-  val payload = airtime.Airtime("+2348063363424","NGN 100")
+  val payload = airtime.Airtime("+2348063363424", "NGN 50")
   val response = AirtimeService.send(payload)
-  response onComplete{
+  response onComplete {
     case Success(message) => message match {
       case Right(airtimeResponse) => logger.info(airtimeResponse.toString)
       case Left(apiResponseException) => logger.error(apiResponseException.toString)
