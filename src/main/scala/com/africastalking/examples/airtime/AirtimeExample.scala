@@ -9,7 +9,7 @@ import scala.util.{Failure, Success}
 
 object AirtimeExample extends App with LazyLogging {
 
-  val payload = airtime.AirtimeRequest("+2348063363424","NGN 100")
+  val payload = airtime.AirtimeRequest("+2348063363424", "NGN 50")
   val response = AirtimeService.send(payload)
 
   response onComplete {
