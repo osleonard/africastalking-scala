@@ -4,20 +4,20 @@ import com.africastalking.core.utils.DefaultJsonFormatter
 
 package object sms {
 
-  case class Message(
+  final case class Message(
     text: String,
     recipients: List[String],
     senderId: Option[String] = None
   )
 
-  case class Recipient(
+  final case class Recipient(
     number: String,
     cost: String,
     status: String,
     messageId: String
   )
 
-  case class Subscription(
+  final case class Subscription(
     id: Long,
     phoneNumber: String,
     date: String
@@ -26,18 +26,18 @@ package object sms {
   sealed trait MessageResponse
 
   case object SendMessageResponse extends MessageResponse {
-    case class SmsMessageData(
+    final case class SmsMessageData(
       recipients: List[Recipient]
     )
   }
 
-  case class SubscriptionResponse(
+  final case class SubscriptionResponse(
     success: String,
     description: String
   ) extends MessageResponse
 
   case object FetchMessageResponse extends MessageResponse {
-    case class SmsMessageData(
+    final case class SmsMessageData(
       messages: List[Message]
     )
   }
