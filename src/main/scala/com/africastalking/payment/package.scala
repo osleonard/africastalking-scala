@@ -4,11 +4,28 @@ import com.africastalking.core.utils._
 import com.africastalking.payment.recipient._
 
 package object payment {
-  final case class MobileCheckoutRequest(productName: String, phoneNumber: String, currencyCode : CurrencyCode.Value, amount: Double)
+  final case class MobileCheckoutRequest(
+    productName: String,
+    phoneNumber: String,
+    currencyCode : CurrencyCode.Value,
+    amount: Double
+  )
 
-  final case class CardCheckoutRequest(productName: String, currencyCode: CurrencyCode.Value, amount: Double, cardDetails: PaymentCard, narration: String)
+  final case class CardCheckoutRequest(
+    productName: String,
+    currencyCode: CurrencyCode.Value,
+    amount: Double,
+    cardDetails: PaymentCard,
+    narration: String
+  )
 
-  final case class BankCheckoutRequest(productName: String, currencyCode: CurrencyCode.Value, amount: Double, bankAccount: BankAccount, narration: String)
+  final case class BankCheckoutRequest(
+    productName: String,
+    currencyCode: CurrencyCode.Value,
+    amount: Double,
+    bankAccount: BankAccount,
+    narration: String
+  )
 
   final case class B2BRequest(
     productName: String,
@@ -49,9 +66,17 @@ package object payment {
     metadata: Option[Map[String, String]] = None
   )
 
-  final case class CheckoutValidationPayload(username: String, transactionId: String, otp: String)
+  final case class CheckoutValidationPayload(
+    username: String,
+    transactionId: String,
+    otp: String
+  )
 
-  final case class BankTransferPayload(username: String, productName: String, recipients: List[Recipient])
+  final case class BankTransferPayload(
+    username: String,
+    productName: String,
+    recipients: List[Recipient]
+  )
 
   final case class WalletTransferPayload(
     username: String,
@@ -62,9 +87,19 @@ package object payment {
     metadata: Option[Metadata] = None
   )
 
-  final case class TopUpStashPayload(username: String, productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata] = None)
+  final case class TopUpStashPayload(
+    username: String,
+    productName: String,
+    currencyCode: CurrencyCode.Value,
+    amount: Double,
+    metadata: Option[Metadata] = None
+  )
 
-  final case class B2CPayload(username: String, productName: String, recipients: List[Consumer])
+  final case class B2CPayload(
+   username: String,
+   productName: String,
+   recipients: List[Consumer]
+   )
 
   final case class B2BPayload(
     username: String,
