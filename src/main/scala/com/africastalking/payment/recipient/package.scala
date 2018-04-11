@@ -3,7 +3,13 @@ package com.africastalking.payment
 import com.africastalking.core.utils.{CurrencyCode, Metadata}
 
 package object recipient {
-  final case class Recipient(currencyCode: CurrencyCode.Value, amount: Double, bankAccount: BankAccount, narration: String, metadata: Option[Metadata] = None)
+  final case class Recipient(
+    currencyCode: CurrencyCode.Value,
+    amount: Double,
+    bankAccount: BankAccount,
+    narration: String,
+    metadata: Option[Metadata] = None
+  )
 
   final case class Business(
     currencyCode: CurrencyCode.Value,

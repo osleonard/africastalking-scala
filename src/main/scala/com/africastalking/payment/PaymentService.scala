@@ -14,11 +14,12 @@ import scala.concurrent.Future
 import spray.json._
 
 object PaymentService extends TPaymentService {
+
   import PaymentJsonProtocol._
 
   override def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
 
-    if(!validatePhoneNumber(checkoutRequest.phoneNumber))
+    if (!validatePhoneNumber(checkoutRequest.phoneNumber))
       Future.successful(Left(s"Invalid phone number: ${checkoutRequest.phoneNumber}; Expecting number in format +XXXxxxxxxxxx"))
     else {
       val checkoutPayload = MobileCheckoutPayload(
@@ -162,23 +163,6 @@ object PaymentService extends TPaymentService {
       .to[RequestEntity]
       .flatMap(entity => callEndpoint(entity, "mobile/b2c/request", payload => payload.parseJson.convertTo[B2CResponse]))
   }
-
-  /*private def callEndpoint[T](entity: RequestEntity, endpoint: String, f: String => T): Future[Either[String, T]] = {
-    val url = s"$environmentHost$endpoint"
-    val request: HttpRequest = HttpRequest(
-      method  = HttpMethods.POST,
-      uri     = url,
-      headers = List(RawHeader("apiKey", apiKey), Accept(MediaTypes.`application/json`)),
-      entity  = entity
-    )
-    makeRequest(request).map { response =>
-      response.responseStatus match {
-        case StatusCodes.OK | StatusCodes.Created => Right(f(response.payload))
-        case _                                    => Left(s"Sorry, ${response.payload}")
-      }
-    }
-  }*/
-
   private def stringToCheckoutResponse(payload: String): CheckoutResponse = payload.parseJson.convertTo[CheckoutResponse]
 
   private def stringToCheckoutValidateResponse(payload: String): CheckoutValidateResponse = payload.parseJson.convertTo[CheckoutValidateResponse]
@@ -186,16 +170,25 @@ object PaymentService extends TPaymentService {
 
 trait TPaymentService extends TService with TServiceConfig {
   def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
+
   def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]
+
   def validateCardCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
+
   def bankCheckout(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]]
+
   def validateBankCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]]
+
   def bankTransfer(productName: String, recipients: List[Recipient]): Future[Either[String, BankTransferResponse]]
+
   def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]]
+
   def topUpStash(productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, TopUpStashResponse]]
+
   def mobileB2B(b2bRequest: B2BRequest, metadata: Option[Metadata] = None): Future[Either[String, B2BResponse]]
+
   def mobileB2C(productName: String, recipients: List[Consumer]): Future[Either[String, B2CResponse]]
 
-  override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) paymentProductionHost else paymentSandboxHost
+  override lazy val environmentHost: String = if (environ.toLowerCase.equals("production")) paymentProductionHost else paymentSandboxHost
 }
 
