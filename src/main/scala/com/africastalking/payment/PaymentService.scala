@@ -18,7 +18,6 @@ object PaymentService extends TPaymentService {
   import PaymentJsonProtocol._
 
   override def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
-
     if (!validatePhoneNumber(checkoutRequest.phoneNumber))
       Future.successful(Left(s"Invalid phone number: ${checkoutRequest.phoneNumber}; Expecting number in format +XXXxxxxxxxxx"))
     else {

@@ -29,7 +29,7 @@ object PaymentJsonProtocol extends DefaultJsonFormatter {
   implicit val topUpStashPayloadFormat         = jsonFormat5(TopUpStashPayload)
   implicit val b2CPayloadFormat                = jsonFormat3(B2CPayload)
   implicit val b2BPayloadFormat                = jsonFormat9(B2BPayload)
-  implicit val b2CEntryFormat                  = jsonFormat8(B2CEntry)
+  implicit val b2CEntryFormat                  = jsonFormat7(B2CEntry)
   implicit val b2BResponseFormat               = jsonFormat4(B2BResponse)
   implicit val b2CResponseFormat               = jsonFormat4(B2CResponse)
 }

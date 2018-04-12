@@ -1,33 +1,47 @@
 package com.africastalking.examples
 package payment
 
+
 import com.africastalking.core.utils.CurrencyCode
+import com.africastalking.payment.recipient.{Consumer, PaymentReasons}
 import com.africastalking.payment.{MobileCheckoutRequest, PaymentService}
-import com.typesafe.scalalogging.LazyLogging
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
 
+object PaymentExample extends TApiExamples {
 
-object PaymentExample extends App with LazyLogging {
+  def main(args: Array[String]): Unit = {
+    // mobileCheckout()
+    mobileB2C()
+  }
 
-  val checkoutRequest = MobileCheckoutRequest(
-    productName  = "pace mate",
-    phoneNumber  = "+254701435178",
-    currencyCode = CurrencyCode.KES,
-    amount       = 100.00
-  )
+  def mobileCheckout() {
+    val checkoutRequest = MobileCheckoutRequest(
+      productName  = "pace mate",
+      phoneNumber  = "+254701435178",
+      currencyCode = CurrencyCode.KES,
+      amount       = 100.00
+    )
 
-  val response = PaymentService.mobileCheckout(checkoutRequest)
+    PaymentService
+      .mobileCheckout(checkoutRequest)
+      .onComplete(processResult)
+  }
 
-  response onComplete {
-    case Success(checkResponseEither) =>
-      checkResponseEither match {
-        case Right(checkoutResponse) =>
-          logger.info(checkoutResponse.toString)
+  def mobileB2C() {
+    val recipients = List(
+      Consumer(
+        name         = "Babatunde Ekemode",
+        phoneNumber  = "+254701435178",
+        currencyCode = CurrencyCode.KES,
+        amount       = 100.00,
+        reason       = PaymentReasons.REASON_BUSINESS,
+        metadata     = Some(Map("date" -> "20th April"))
+      )
+    )
 
-        case Left(errorMessage) =>
-          logger.error(errorMessage)
-      }
-    case Failure(exception) => logger.error(exception.getMessage)
+    PaymentService
+      .mobileB2C("redElastic", recipients)
+      .onComplete(processResult)
   }
 }

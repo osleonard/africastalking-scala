@@ -59,7 +59,6 @@ package object response {
     provider: String,
     providerChannel: String,
     value: String,
-    transientId: String,
     transactionFee: String,
     errorMessage: Option[String] = None
   )

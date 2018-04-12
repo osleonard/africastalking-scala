@@ -3,7 +3,7 @@ package com.africastalking.application
 import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import akka.http.scaladsl.model._
 import com.africastalking.core.commons.TService
-import com.africastalking.core.utils.{DefaultJsonFormatter, TServiceConfig}
+import com.africastalking.core.utils.TServiceConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
