@@ -37,7 +37,7 @@ trait TService {
     }
   }
 
-  private def makeRequest(httpRequest: => HttpRequest): Future[ApiResponse] = {
+  protected def makeRequest(httpRequest: => HttpRequest): Future[ApiResponse] = {
     val connectionSettings     = ClientConnectionSettings(system).withIdleTimeout(requestTimeout.duration)
     val connectionPoolSettings = ConnectionPoolSettings(system).withConnectionSettings(connectionSettings)
 
