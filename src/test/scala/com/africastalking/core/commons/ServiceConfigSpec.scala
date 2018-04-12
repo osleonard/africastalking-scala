@@ -4,7 +4,6 @@ import com.africastalking.core.ApiTestSpec
 import com.africastalking.core.utils.TServiceConfig
 
 class ServiceConfigSpec extends ApiTestSpec with TServiceConfig {
-  override val environmentHost: String = if(environ.toLowerCase.equals("production")) voiceProductionHost else voiceSandboxHost
 
   "Api Production Host" should "be africastalking.com" in {
     assert(apiProductionHost === "https://api.africastalking.com/version1/")

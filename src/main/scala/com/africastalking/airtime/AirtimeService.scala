@@ -23,6 +23,4 @@ object AirtimeService extends TAirtimeService {
 
 trait TAirtimeService extends TService with TServiceConfig {
   def send(airtime: AirtimeRequest) : Future[Either[String, AirtimeResponse]]
-
-  override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
 }

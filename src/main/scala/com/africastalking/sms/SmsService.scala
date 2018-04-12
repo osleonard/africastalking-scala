@@ -38,6 +38,4 @@ trait TSmsService extends TService with TServiceConfig {
   def send(message: Message, enqueue: Int): Future[Either[String, SmsMessageData]]
 
   def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long): Future[Either[String, SmsMessageData]]
-
-  override lazy val environmentHost: String = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
 }
