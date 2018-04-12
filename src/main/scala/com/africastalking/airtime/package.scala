@@ -2,7 +2,7 @@ package com.africastalking
 
 import com.africastalking.core.utils.DefaultJsonFormatter
 package object airtime {
-  case class AirtimeRequest(
+  final case class AirtimeRequest(
     recipients: String,
     amount: String
   ) {
@@ -11,7 +11,7 @@ package object airtime {
      """
   }
 
-  case class AirtimeResponse(
+  final case class AirtimeResponse(
     numSent: Int,
     totalAmount: String,
     totalDiscount: String,
@@ -19,7 +19,7 @@ package object airtime {
     responses: List[AirtimeEntry]
   )
 
-  case class AirtimeEntry(
+  final case class AirtimeEntry(
     errorMessage: String,
     phoneNumber: String,
     amount: String,
