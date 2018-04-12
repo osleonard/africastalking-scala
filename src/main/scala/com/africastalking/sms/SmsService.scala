@@ -3,9 +3,7 @@ package com.africastalking.sms
 import akka.http.scaladsl.model._
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.TServiceConfig
-
 import spray.json._
-
 import scala.collection.mutable
 import scala.concurrent.Future
 import SendMessageResponse._
