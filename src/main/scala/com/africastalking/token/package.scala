@@ -6,13 +6,13 @@ import com.africastalking.core.utils.DefaultJsonFormatter
 package object token {
   final case class CheckoutTokenResponse(token: String, description: String)
 
-  final case class AuthTokenResponse(token: String, lifetimeInSeconds: Long)
+  final case class GenerateAuthTokenResponse(token: String, lifetimeInSeconds: Long)
 
-  final case class AuthTokenPayload(body: String)
+  final case class GenerateAuthTokenPayload(username: String)
 
   object TokenJsonProtocol extends DefaultJsonFormatter {
-    implicit val checkoutTokenResponseFormat = jsonFormat2(CheckoutTokenResponse)
-    implicit val authTokenResponseFormat     = jsonFormat2(AuthTokenResponse)
-    implicit val authTokenPayloadFormat      = jsonFormat1(AuthTokenPayload)
+    implicit val checkoutTokenResponseFormat     = jsonFormat2(CheckoutTokenResponse)
+    implicit val generateAuthTokenResponseFormat = jsonFormat2(GenerateAuthTokenResponse)
+    implicit val generateAuthTokenPayloadFormat  = jsonFormat1(GenerateAuthTokenPayload)
   }
 }

@@ -7,17 +7,19 @@ import com.typesafe.config.ConfigFactory
 trait TServiceConfig {
   import scala.concurrent.duration._
 
-  private lazy val config                = ConfigFactory.load()
-  lazy val username: String              = config.getString("at.username")
-  lazy val apiKey: String                = config.getString("at.key")
-  lazy val environ: String               = config.getString("at.environ")
-  lazy val apiProductionHost: String     = config.getString("at.host.api.production")
-  lazy val apiSandboxHost: String        = config.getString("at.host.api.sandbox")
-  lazy val paymentProductionHost: String = config.getString("at.host.payment.production")
-  lazy val paymentSandboxHost: String    = config.getString("at.host.payment.sandbox")
-  lazy val voiceProductionHost: String   = config.getString("at.host.voice.production")
-  lazy val voiceSandboxHost: String      = config.getString("at.host.voice.sandbox")
-  lazy val environmentHost: String       = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
+  private lazy val config                          = ConfigFactory.load()
+  protected lazy val username: String              = config.getString("at.username")
+  protected lazy val apiKey: String                = config.getString("at.key")
+  protected lazy val environ: String               = config.getString("at.environ")
+  protected lazy val apiProductionHost: String     = config.getString("at.host.api.production")
+  protected lazy val apiSandboxHost: String        = config.getString("at.host.api.sandbox")
+  protected lazy val paymentProductionHost: String = config.getString("at.host.payment.production")
+  protected lazy val paymentSandboxHost: String    = config.getString("at.host.payment.sandbox")
+  protected lazy val voiceProductionHost: String   = config.getString("at.host.voice.production")
+  protected lazy val voiceSandboxHost: String      = config.getString("at.host.voice.sandbox")
+  protected lazy val apiEnvironmentHost: String    = if(environ.toLowerCase.equals("production")) apiProductionHost else apiSandboxHost
+
+  def environmentHost: String = s"${apiEnvironmentHost}version1/"
 
   def requestTimeout: Timeout = {
     val t = config.getString("akka.http.server.request-timeout")

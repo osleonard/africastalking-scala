@@ -35,8 +35,7 @@ object PaymentExample extends TApiExamples {
         phoneNumber  = "+254701435178",
         currencyCode = CurrencyCode.KES,
         amount       = 100.00,
-        reason       = PaymentReasons.REASON_BUSINESS,
-        metadata     = Some(Map("date" -> "20th April"))
+        reason       = PaymentReasons.REASON_BUSINESS
       )
     )
 

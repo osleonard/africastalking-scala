@@ -20,19 +20,21 @@ object TokenService extends TTokenService {
     callEndpoint(entity, "checkout/token/create", payload => payload.parseJson.convertTo[CheckoutTokenResponse])
   }
 
-  override def generateAuthToken: Future[Either[String, AuthTokenResponse]] = {
-    val authTokenPayload = AuthTokenPayload(
-      body = s"""{"username": $username}"""
+  override def generateAuthToken: Future[Either[String, GenerateAuthTokenResponse]] = {
+    val authTokenPayload = GenerateAuthTokenPayload(
+      username = username
     )
 
     Marshal(authTokenPayload)
       .to[RequestEntity]
-      .flatMap(entity => callEndpoint(entity, "auth-token/generate", payload => payload.parseJson.convertTo[AuthTokenResponse]))
+      .flatMap(entity => callEndpoint(entity, "auth-token/generate", payload => payload.parseJson.convertTo[GenerateAuthTokenResponse]))
   }
 }
 
 trait TTokenService extends TService with TServiceConfig {
   def createCheckoutToken(phoneNumber: String): Future[Either[String, CheckoutTokenResponse]]
 
-  def generateAuthToken: Future[Either[String, AuthTokenResponse]]
+  def generateAuthToken: Future[Either[String, GenerateAuthTokenResponse]]
+
+  override lazy val environmentHost: String = apiEnvironmentHost
 }

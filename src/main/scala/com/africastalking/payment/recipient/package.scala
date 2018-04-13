@@ -40,7 +40,7 @@ package object recipient {
     amount: Double,
     reason: PaymentReasons.Value,
     providerChannel: Option[String] = None,
-    metadata: Option[Metadata] = None
+    metadata: Metadata              = Map.empty
   )
 
   object PaymentReasons extends Enumeration {
