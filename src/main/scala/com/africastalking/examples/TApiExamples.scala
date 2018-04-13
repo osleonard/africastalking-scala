@@ -5,6 +5,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scala.util.{Failure, Success, Try}
 
 trait TApiExamples extends LazyLogging {
+
   def processResult[T](result: Try[T]): Unit = result match {
     case Success(response) =>
       response match {

@@ -12,13 +12,13 @@ object TokenServiceExample extends TApiExamples {
     createCheckoutToken()
   }
 
-  def generateAuthToken() {
+  private def generateAuthToken() {
     TokenService
       .generateAuthToken
       .onComplete(processResult)
   }
 
-  def createCheckoutToken() {
+  private def createCheckoutToken() {
     TokenService
       .createCheckoutToken("+2348120157832")
       .onComplete(processResult)

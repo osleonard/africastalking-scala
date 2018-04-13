@@ -1,13 +1,15 @@
 package com.africastalking.examples.voice
 
+import com.africastalking.examples.TApiExamples
 import com.africastalking.voice.ActionBuilder
-import com.typesafe.scalalogging.LazyLogging
 
-object VoiceServiceExample extends App with LazyLogging {
-  val response =
-    ActionBuilder
-      .say
-      .play
-      .getDigits
-      .build
+object VoiceServiceExample extends TApiExamples {
+
+  def main(args: Array[String]): Unit = {
+      ActionBuilder
+        .say
+        .play
+        .getDigits
+        .build
+  }
 }

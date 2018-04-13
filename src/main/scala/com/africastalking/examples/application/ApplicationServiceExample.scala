@@ -11,6 +11,8 @@ object ApplicationServiceExample extends TApiExamples {
   }
 
   private def fetchApplicationData() {
-    ApplicationService.fetchApplicationData.onComplete(processResult)
+    ApplicationService
+      .fetchApplicationData
+      .onComplete(processResult)
   }
 }

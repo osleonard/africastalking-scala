@@ -1,22 +1,24 @@
 package com.africastalking.examples
 package airtime
 
-import com.africastalking.airtime
-import com.africastalking.airtime.AirtimeService
-import com.typesafe.scalalogging.LazyLogging
+import com.africastalking.airtime.{AirtimeRequest, AirtimeService}
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
 
-object AirtimeExample extends App with LazyLogging {
+object AirtimeExample extends TApiExamples {
 
-  val payload = airtime.AirtimeRequest("+2348063363424", "NGN 50")
-  val response = AirtimeService.send(payload)
+  def main(args: Array[String]): Unit = {
+    sendAirtime()
+  }
 
-  response onComplete {
-    case Success(message) => message match {
-      case Right(airtimeResponse) => logger.info(airtimeResponse.toString)
-      case Left(apiResponseException) => logger.error(apiResponseException.toString)
-    }
-    case Failure(ex) => logger.error(ex.getMessage)
+  private def sendAirtime() {
+    val payload = AirtimeRequest(
+      recipients = "+2348063363424",
+      amount     = "NGN 50"
+    )
+
+    AirtimeService
+      .send(payload)
+      .onComplete(processResult)
   }
 }

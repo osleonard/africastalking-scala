@@ -15,7 +15,7 @@ object PaymentExample extends TApiExamples {
     mobileB2C()
   }
 
-  def mobileCheckout() {
+  private def mobileCheckout() {
     val checkoutRequest = MobileCheckoutRequest(
       productName  = "pace mate",
       phoneNumber  = "+254701435178",
@@ -28,7 +28,7 @@ object PaymentExample extends TApiExamples {
       .onComplete(processResult)
   }
 
-  def mobileB2C() {
+  private def mobileB2C() {
     val recipients = List(
       Consumer(
         name         = "Babatunde Ekemode",
