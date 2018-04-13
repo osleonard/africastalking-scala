@@ -6,11 +6,11 @@ import com.africastalking.core.utils.TServiceConfig
 class ServiceConfigSpec extends ApiTestSpec with TServiceConfig {
 
   "Api Production Host" should "be africastalking.com" in {
-    assert(apiProductionHost === "https://api.africastalking.com/version1/")
+    assert(apiProductionHost === "https://api.africastalking.com/")
   }
 
   "Api Sandbox Host" should "be sandbox.africastalking.com" in  {
-    assert(apiSandboxHost === "https://api.sandbox.africastalking.com/version1/")
+    assert(apiSandboxHost === "https://api.sandbox.africastalking.com/")
   }
 
   "Payment Production Host" should "be https://payments.africastalking.com/" in {
