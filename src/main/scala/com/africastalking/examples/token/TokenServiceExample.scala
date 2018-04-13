@@ -8,7 +8,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object TokenServiceExample extends TApiExamples {
 
   def main(args: Array[String]): Unit = {
-    //generateAuthToken()
     createCheckoutToken()
   }
 
