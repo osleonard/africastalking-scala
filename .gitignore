@@ -4,8 +4,7 @@ target/
 **/target/
 
 # user specific configuration
-examples/src/main/resources
-libs/src/test/resources
+**/application.conf
 
 # sbt specific
 *.class
