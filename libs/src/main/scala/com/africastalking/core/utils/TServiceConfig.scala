@@ -8,9 +8,9 @@ trait TServiceConfig {
   import scala.concurrent.duration._
 
   private lazy val config                          = ConfigFactory.load()
-  protected lazy val username: String              = config.getString("at.username")
-  protected lazy val apiKey: String                = config.getString("at.key")
-  protected lazy val environ: String               = config.getString("at.environ")
+  protected lazy val username: String              = config.getString("api.username")
+  protected lazy val apiKey: String                = config.getString("api.key")
+  protected lazy val environ: String               = config.getString("api.environment")
   protected lazy val apiProductionHost: String     = config.getString("at.host.api.production")
   protected lazy val apiSandboxHost: String        = config.getString("at.host.api.sandbox")
   protected lazy val paymentProductionHost: String = config.getString("at.host.payment.production")

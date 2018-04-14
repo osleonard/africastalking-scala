@@ -3,6 +3,9 @@ target/
 # this is for the generated modules
 **/target/
 
+# user specific configuration
+examples/src/main/resources
+libs/src/test/resources
 
 # sbt specific
 *.class
