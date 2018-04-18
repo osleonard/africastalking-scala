@@ -21,6 +21,14 @@ trait TService {
   implicit private val materializer     = ActorMaterializer()
   implicit private val executionContext = system.dispatcher
 
+  /**
+    * This function takes request entity as payload, endpoint per request and a return entity type
+    * @param entity
+    * @param endpoint
+    * @param f
+    * @tparam T
+    * @return
+    */
   protected def callEndpoint[T](entity: RequestEntity, endpoint: String, f: String => T): Future[Either[String, T]] = {
     val url = s"$environmentHost$endpoint"
     val request: HttpRequest = HttpRequest(
@@ -37,6 +45,13 @@ trait TService {
     }
   }
 
+  /**
+    * This function is only used when @HttpRequest is composed from a service class without using the call endpoint
+    * function
+    * @param httpRequest
+    * @return
+    */
+
   protected def makeRequest(httpRequest: => HttpRequest): Future[ApiResponse] = {
     val connectionSettings     = ClientConnectionSettings(system).withIdleTimeout(requestTimeout.duration)
     val connectionPoolSettings = ConnectionPoolSettings(system).withConnectionSettings(connectionSettings)
@@ -47,6 +62,13 @@ trait TService {
         .map(payload => ApiResponse(response.status, payload))
     )
   }
+
+  /**
+    * Function can be used to validate phone numbers so as to avoid runtime errors as the api requires all
+    * phone numbers must be in international format.
+    * @param phone
+    * @return
+    */
 
   protected def validatePhoneNumber(phone: String): Boolean = if(phone.matches(Const.INTL_PHONE_FORMAT)) true else false
 }
