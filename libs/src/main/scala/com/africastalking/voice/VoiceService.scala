@@ -14,6 +14,13 @@ class VoiceService extends TVoiceService {
 
   import VoiceJsonProtocol._
 
+
+  /**
+    *
+    * @param to
+    * @param from
+    * @return
+    */
   override def call(to: String, from: String): Future[Either[String, CallResponse]] = {
     val callPayload = CallPayload(
       username = username,
@@ -26,6 +33,11 @@ class VoiceService extends TVoiceService {
       .flatMap(entity => callEndpoint(entity, "call", payload => payload.parseJson.convertTo[CallResponse]))
   }
 
+  /**
+    *
+    * @param phoneNumber
+    * @return
+    */
   override def fetchQueuedCalls(phoneNumber: String): Future[Either[String, QueuedCallsResponse]] = {
     val queuedCallsPayload = QueuedCallsPayload(
       username     = username,
@@ -36,6 +48,13 @@ class VoiceService extends TVoiceService {
       .to[RequestEntity]
       .flatMap(entity => callEndpoint(entity, "queueStatus", payload => payload.parseJson.convertTo[QueuedCallsResponse]))
   }
+
+  /**
+    *
+    * @param phoneNumber
+    * @param url
+    * @return
+    */
 
   override def uploadMediaFile(phoneNumber: String, url: String): Future[Either[String, String]] = {
     val mediaUploadPayload = MediaUploadPayload(
