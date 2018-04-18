@@ -16,6 +16,15 @@ object SmsService extends TSmsService {
 
   import SmsJsonProtocol._
 
+  /**
+    * This function sends messages asynchronously and enqueue flag is defaulted to zero
+    * A string response is returned in case of any exception and a message response is returned when messages are
+    * successfully sent
+    * @param message
+    * @param enqueue
+    * @return
+    */
+
   override def send(message: Message, enqueue: Int = 0): Future[Either[String, SendMessageResponse]] = {
     val entity = {
       val data = mutable.Map(
@@ -35,6 +44,15 @@ object SmsService extends TSmsService {
 
   override def sendPremium(message: Message, keyword: String, linkId: String, retryDurationInHours: Long): Future[Either[String, SMSMessageData]] = ???
 
+  /**
+    * This function asynchronously fetches sent messages from the api
+    * the lastReceivedId parameter is defaulted to zero just in case its the first time any sdk user wants to
+    * retrieve sent message for the first time
+    * A string response is returned in case of any exception and a fetch message response is returned when
+    * sent messages are successfully retrieved
+    * @param lastReceivedId
+    * @return
+    */
   override def fetchMessages(lastReceivedId: String = "0") : Future[Either[String, FetchMessageResponse]] = {
     val httpRequest = HttpRequest(
       method  = HttpMethods.GET,
