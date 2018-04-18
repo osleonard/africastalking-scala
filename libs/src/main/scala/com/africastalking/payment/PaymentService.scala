@@ -17,6 +17,12 @@ object PaymentService extends TPaymentService {
 
   import PaymentJsonProtocol._
 
+  /**
+    *
+    * @param checkoutRequest
+    * @param metadata
+    * @return
+    */
   override def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
     if (!validatePhoneNumber(checkoutRequest.phoneNumber))
       Future.successful(Left(s"Invalid phone number: ${checkoutRequest.phoneNumber}; Expecting number in format +XXXxxxxxxxxx"))
@@ -36,6 +42,12 @@ object PaymentService extends TPaymentService {
     }
   }
 
+  /**
+    *
+    * @param checkoutRequest
+    * @param metadata
+    * @return
+    */
   override def cardCheckout(checkoutRequest: CardCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
     val checkoutPayload = CardCheckoutPayload(
       username     = username,
@@ -52,6 +64,12 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint[CheckoutResponse](entity, "card/checkout/charge", stringToCheckoutResponse))
   }
 
+  /**
+    *
+    * @param transactionId
+    * @param otp
+    * @return
+    */
   override def validateCardCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]] = {
     val checkoutValidation = CheckoutValidationPayload(
       username      = username,
@@ -64,6 +82,12 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "card/checkout/validate", stringToCheckoutValidateResponse))
   }
 
+  /**
+    *
+    * @param checkoutRequest
+    * @param metadata
+    * @return
+    */
   override def bankCheckout(checkoutRequest: BankCheckoutRequest, metadata: Option[Metadata] = None): Future[Either[String, CheckoutResponse]] = {
     val checkoutPayload = BankCheckoutPayload(
       username     = username,
@@ -80,6 +104,12 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/checkout/charge", stringToCheckoutResponse))
   }
 
+  /**
+    *
+    * @param transactionId
+    * @param otp
+    * @return
+    */
   override def validateBankCheckout(transactionId: String, otp: String): Future[Either[String, CheckoutValidateResponse]] = {
     val checkoutValidation = CheckoutValidationPayload(
       username      = username,
@@ -92,6 +122,12 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/checkout/validate", stringToCheckoutValidateResponse))
   }
 
+  /**
+    *
+    * @param productName
+    * @param recipients
+    * @return
+    */
   override def bankTransfer(productName: String, recipients: List[Recipient]): Future[Either[String, BankTransferResponse]] = {
     val bankTransferPayload = BankTransferPayload(
       username    = username,
@@ -104,6 +140,15 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "bank/transfer", payload => payload.parseJson.convertTo[BankTransferResponse]))
   }
 
+  /**
+    *
+    * @param productName
+    * @param targetProductCode
+    * @param currencyCode
+    * @param amount
+    * @param metadata
+    * @return
+    */
   override def walletTransfer(productName: String, targetProductCode: Long, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, WalletTransferResponse]] = {
     val walletTransferPayload = WalletTransferPayload(
       username          = username,
@@ -119,6 +164,15 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "transfer/wallet", payload => payload.parseJson.convertTo[WalletTransferResponse]))
   }
 
+  /**
+    *
+    * @param productName
+    * @param currencyCode
+    * @param amount
+    * @param metadata
+    * @return
+    */
+
   override def topUpStash(productName: String, currencyCode: CurrencyCode.Value, amount: Double, metadata: Option[Metadata]): Future[Either[String, TopUpStashResponse]] = {
     val topUpStashPayload = TopUpStashPayload(
       username     = username,
@@ -132,6 +186,13 @@ object PaymentService extends TPaymentService {
       .to[RequestEntity]
       .flatMap(entity => callEndpoint(entity, "topup/stash", payload => payload.parseJson.convertTo[TopUpStashResponse]))
   }
+
+  /**
+    *
+    * @param b2bRequest
+    * @param metadata
+    * @return
+    */
 
   override def mobileB2B(b2bRequest: B2BRequest, metadata: Option[Metadata] = None): Future[Either[String, B2BResponse]] = {
     val b2BPayload = B2BPayload(
@@ -151,6 +212,12 @@ object PaymentService extends TPaymentService {
       .flatMap(entity => callEndpoint(entity, "mobile/b2b/request", payload => payload.parseJson.convertTo[B2BResponse]))
   }
 
+  /**
+    *
+    * @param productName
+    * @param recipients
+    * @return
+    */
   override def mobileB2C(productName: String, recipients: List[Consumer]): Future[Either[String, B2CResponse]] = {
     val b2cPayload = B2CPayload(
       username    = username,
@@ -166,6 +233,8 @@ object PaymentService extends TPaymentService {
 
   private def stringToCheckoutValidateResponse(payload: String): CheckoutValidateResponse = payload.parseJson.convertTo[CheckoutValidateResponse]
 }
+
+
 
 trait TPaymentService extends TService with TServiceConfig {
   def mobileCheckout(checkoutRequest: MobileCheckoutRequest, metadata: Option[Metadata]): Future[Either[String, CheckoutResponse]]

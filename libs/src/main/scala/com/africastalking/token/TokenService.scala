@@ -14,12 +14,25 @@ object TokenService extends TTokenService {
 
   import TokenJsonProtocol._
 
+  /**
+    * Asynchronously generate checkout token from the api
+    * A string response is returned in case of any exception and a checkout token response is
+    * returned when request is fulfilled
+    * @param phoneNumber
+    * @return
+    */
   override def createCheckoutToken(phoneNumber: String): Future[Either[String, CheckoutTokenResponse]] = {
     val entity = FormData(Map("phoneNumber" -> phoneNumber)).toEntity
 
     callEndpoint(entity, "checkout/token/create", payload => payload.parseJson.convertTo[CheckoutTokenResponse])
   }
 
+  /**
+    * Asynchronously generate authentication token from the api
+    * A string response is returned in case of any exception and a generate auth token response is
+    * returned when request is fulfilled
+    * @return
+    */
   override def generateAuthToken: Future[Either[String, GenerateAuthTokenResponse]] = {
     val authTokenPayload = GenerateAuthTokenPayload(
       username = username
@@ -32,6 +45,7 @@ object TokenService extends TTokenService {
 }
 
 trait TTokenService extends TService with TServiceConfig {
+
   def createCheckoutToken(phoneNumber: String): Future[Either[String, CheckoutTokenResponse]]
 
   def generateAuthToken: Future[Either[String, GenerateAuthTokenResponse]]
