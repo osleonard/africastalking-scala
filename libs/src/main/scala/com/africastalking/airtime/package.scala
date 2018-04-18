@@ -2,6 +2,7 @@ package com.africastalking
 
 import com.africastalking.core.utils.DefaultJsonFormatter
 package object airtime {
+
   final case class AirtimeRequest(
     recipients: String,
     amount: String
