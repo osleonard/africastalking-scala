@@ -70,7 +70,7 @@ class VoiceService extends TVoiceService {
 }
 
 trait TVoiceService extends TService with TServiceConfig {
-  def call(to: String, from: String): Future[Either[String, CallResponse]]
+  def call(to: List[String], from: String): Future[Either[String, CallResponse]]
 
   def fetchQueuedCalls(phoneNumber: String): Future[Either[String, QueuedCallsResponse]]
 
