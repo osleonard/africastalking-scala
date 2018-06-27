@@ -1,10 +1,10 @@
 package com.africastalking.airtime
 
 import akka.http.scaladsl.model._
-import com.africastalking.core.utils.TServiceConfig
 import com.africastalking.core.commons.TService
-import spray.json._
+import com.africastalking.core.utils.TServiceConfig
 import scala.concurrent.Future
+import spray.json._
 
 object AirtimeService extends TAirtimeService {
   import AirtimeJsonProtocol._

@@ -1,5 +1,5 @@
 package com.africastalking.core
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, MustMatchers}
 
-trait ApiTestSpec extends FlatSpec with Matchers
+trait ApiTestSpec extends FlatSpec with MustMatchers

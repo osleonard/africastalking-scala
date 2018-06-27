@@ -10,9 +10,9 @@ import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
 import com.africastalking.core.utils.{ApiResponse, TServiceConfig}
 
+import com.africastalking.core.utils.Const
 import scala.concurrent.Future
 import scala.language.postfixOps
-import com.africastalking.core.utils.Const
 
 trait TService {
   this: TServiceConfig =>

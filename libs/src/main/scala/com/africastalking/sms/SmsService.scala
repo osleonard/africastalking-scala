@@ -1,14 +1,14 @@
 package com.africastalking.sms
 
 import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import com.africastalking.core.commons.TService
 import com.africastalking.core.utils.TServiceConfig
-import spray.json._
-import scala.collection.mutable
-import scala.concurrent.Future
-import akka.http.scaladsl.model.headers.{Accept, RawHeader}
 import com.africastalking.sms.request.Message
 import com.africastalking.sms.response.{FetchMessageResponse, SMSMessageData, SendMessageResponse}
+import scala.collection.mutable
+import scala.concurrent.Future
+import spray.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

@@ -17,14 +17,14 @@ class VoiceService extends TVoiceService {
 
   /**
     *
-    * @param to
-    * @param from
+    * @param to is the list of callers
+    * @param from is the callee
     * @return
     */
-  override def call(to: String, from: String): Future[Either[String, CallResponse]] = {
+  override def call(to: List[String], from: String): Future[Either[String, CallResponse]] = {
     val callPayload = CallPayload(
       username = username,
-      to       = to,
+      to       = to.mkString(","),
       from     = from
     )
 
